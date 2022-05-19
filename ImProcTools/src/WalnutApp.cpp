@@ -72,12 +72,14 @@ class ExampleLayer : public Walnut::Layer
             ImGui::Begin("Processing", &bShowProcessingWindow);
             ImGui::End();
         }
-        ImGui::ShowDemoWindow();
+        if (bShowDemoWindow)
+            ImGui::ShowDemoWindow(&bShowDemoWindow);
     }
 
   private:
     // functions
-
+  public:
+    bool bShowDemoWindow = false;
   private:
     bool bShowConfigurationWindow;
     bool bShowNodeEditorWindow;
@@ -93,9 +95,11 @@ Walnut::Application *Walnut::CreateApplication(int argc, char **argv)
     spec.Name = "Walnut Example";
 
     Walnut::Application *app = new Walnut::Application(spec);
-    app->PushLayer<ExampleLayer>();
+    auto layer = std::make_shared<ExampleLayer>();
+    auto layerptr = layer.get();
+    app->PushLayer(layer);
     app->SetMenubarCallback(
-        [app]()
+        [app, layerptr]()
         {
             if (ImGui::BeginMenu("File"))
             {
@@ -105,14 +109,14 @@ Walnut::Application *Walnut::CreateApplication(int argc, char **argv)
                 }
                 ImGui::EndMenu();
             }
-            // if (ImGui::BeginMenu("Show"))
-            //{
-            //	if (ImGui::MenuItem("Demo"))
-            //	{
-
-            //	}
-            //	ImGui::EndMenu();
-            //}
+             if (ImGui::BeginMenu("Show"))
+            {
+            	if (ImGui::MenuItem("Demo"))
+            	{
+                    layerptr->bShowDemoWindow = true;
+            	}
+            	ImGui::EndMenu();
+            }
         });
     return app;
 }

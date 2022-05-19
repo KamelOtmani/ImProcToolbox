@@ -5,7 +5,7 @@ project "ImProcTools"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "src/**.h", "src/**.cpp" }
+   files { "src/**.h", "src/**.cpp","src/**.hpp" }
 
    includedirs
    {
@@ -13,6 +13,7 @@ project "ImProcTools"
       "../vendor/glfw/include",
 
       "../Walnut/src",
+      "src",
 
       "%{IncludeDir.VulkanSDK}",
       "%{IncludeDir.glm}",

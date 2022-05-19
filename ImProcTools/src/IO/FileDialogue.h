@@ -10,7 +10,7 @@
 
 using std::filesystem::path;
 
-namespace Utility::FileDialogue
+namespace ImProc::Utility::FileDialogue
 {
 std::vector<path> OpenFile(const char *filter, bool multiselect = false)
 {
