@@ -6,6 +6,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <Walnut/Image.h>
 #include <memory>
+#include "ImageIO.hpp"
 
 namespace ImProc::Utility
 {
@@ -71,4 +72,10 @@ std::unique_ptr<Walnut::Image> CreateImageFromOpencv(const cv::Mat &image)
                                    image.data);
 }
 
+cv::Mat ConvertToRGBA(const cv::Mat &image)
+{
+    cv::Mat output;
+    cv::cvtColor(image, output, cv::ColorConversionCodes::COLOR_GRAY2RGBA);
+    return output;
+}
 } // namespace ImProc::Utility

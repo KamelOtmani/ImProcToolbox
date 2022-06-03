@@ -9,4 +9,6 @@ namespace ImProc::Utility
 
 	std::unique_ptr<Walnut::Image>
         CreateImageFromOpencv(const cv::Mat &image);
-}
+
+	cv::Mat ConvertToRGBA(const cv::Mat &image);
+        }

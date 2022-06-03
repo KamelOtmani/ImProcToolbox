@@ -63,8 +63,8 @@ std::vector<path> OpenFile(const char *filter, bool multiselect)
 }
 
 /*
-* Returns the list of folders that are contained in the selcted folder
-*/
+ * Returns the list of folders that are contained in the selcted folder
+ */
 std::vector<std::filesystem::path> BrowseFolder()
 {
     std::vector<fs::path> paths{};
@@ -82,11 +82,14 @@ std::vector<std::filesystem::path> BrowseFolder()
     LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
     if (pidl != NULL && SHGetPathFromIDList(pidl, path))
     {
-        //auto paths = fs::path{path};
+        // auto paths = fs::path{path};
         auto dirs = fs::directory_iterator(path);
-        for (const auto& dir : dirs)
+        for (const auto &dir : dirs)
         {
-            paths.push_back(dir);
+            if (fs::is_directory(dir))
+            {
+                paths.push_back(dir);
+            }
         }
     }
     return paths;
