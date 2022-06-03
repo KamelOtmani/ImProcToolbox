@@ -5,6 +5,7 @@
 
 #include "UI/ConfigurationTab.hpp"
 #include "UI/Style.hpp"
+#include <UI/BatchProcessing.hpp>
 
 using namespace Walnut;
 namespace fs = std::filesystem;
@@ -14,7 +15,8 @@ class ExampleLayer : public Walnut::Layer
   public:
     virtual void OnAttach() override {}
 
-    virtual void OnUpdate() override {}
+    virtual void OnUpdate() override { mBatchProcessingTab.Update();
+    }
 
     virtual void OnUIRender() override
     {
@@ -28,18 +30,24 @@ class ExampleLayer : public Walnut::Layer
         //ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, {-1, 75});
         ImGui::Begin("MainWindow", nullptr, ImGuiWindowFlags_NoTitleBar);
         ImGui::BeginHorizontal("h1", {-1, 0});
-        if (ImGui::Button("Configuration", {150, 50}))
+        //if (ImGui::Button("Configuration", {150, 50}))
+        //{
+        //    bShowConfigurationWindow = !bShowConfigurationWindow;
+        //}
+        if (ImGui::Button("Batch Processing", {150, 50}))
         {
-            bShowConfigurationWindow = !bShowConfigurationWindow;
+            bShowBatchProcessingWindow = !bShowBatchProcessingWindow;
         }
+        ImGui::BeginDisabled(true);
         if (ImGui::Button("Node Editor", {150, 50}))
         {
             bShowNodeEditorWindow = !bShowNodeEditorWindow;
         }
-        if (ImGui::Button("Processing", {150, 50}))
-        {
-            bShowProcessingWindow = !bShowProcessingWindow;
-        }
+        ImGui::EndDisabled();
+        //if (ImGui::Button("Processing", {150, 50}))
+        //{
+        //    bShowProcessingWindow = !bShowProcessingWindow;
+        //}
         ImGui::EndHorizontal();
         ImGui::End(); // main window
         ImGui::PopStyleVar();
@@ -62,6 +70,11 @@ class ExampleLayer : public Walnut::Layer
         {
             mConfigurationTab.DrawWindow();
         }
+
+        if (bShowBatchProcessingWindow)
+        {
+            mBatchProcessingTab.DrawWindow();
+        }
         if (bShowNodeEditorWindow)
         {
             ImGui::Begin("Node Editor", &bShowNodeEditorWindow);
@@ -82,11 +95,13 @@ class ExampleLayer : public Walnut::Layer
     bool bShowDemoWindow = false;
   private:
     bool bShowConfigurationWindow;
+    bool bShowBatchProcessingWindow;
     bool bShowNodeEditorWindow;
     bool bShowProcessingWindow;
 
     //ImProc::TabWindow mProcessingTab{"Processing"};
     ImProc::ConfigurationTab mConfigurationTab{&bShowConfigurationWindow};
+    ImProc::BatchProcessingTab mBatchProcessingTab{&bShowBatchProcessingWindow};
 };
 
 Walnut::Application *Walnut::CreateApplication(int argc, char **argv)

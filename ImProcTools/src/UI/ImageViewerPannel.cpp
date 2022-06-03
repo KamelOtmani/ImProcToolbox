@@ -121,7 +121,7 @@ void ImageViewerPannel::onUIRender()
         }
         // pannel height
         float h = -1;
-        ImGui::Text("% f", ImageViewerWidth);
+        //ImGui::Text("% f", ImageViewerWidth);
 
         // DrawSplitter(true, 80.0f, &sz1, &sz2, 80, 80, h); // code above
 
