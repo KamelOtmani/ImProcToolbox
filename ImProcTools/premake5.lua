@@ -13,6 +13,7 @@ project "ImProcTools"
       "../vendor/glfw/include",
 
       "../Walnut/src",
+      "../ImProcProcessing/src",
       "src",
 
       "%{IncludeDir.VulkanSDK}",
@@ -22,6 +23,7 @@ project "ImProcTools"
    links
    {
       "Walnut",
+      "ImProcProcessing",
    }
 
    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")

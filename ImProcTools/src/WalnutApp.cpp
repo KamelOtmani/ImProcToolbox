@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <iostream>
 
+#include "UI/BackgroundExtractor.hpp"
 #include "UI/ConfigurationTab.hpp"
 #include "UI/Style.hpp"
 #include <UI/BatchProcessing.hpp>
@@ -15,7 +16,10 @@ class ExampleLayer : public Walnut::Layer
   public:
     virtual void OnAttach() override {}
 
-    virtual void OnUpdate() override { mBatchProcessingTab.Update();
+    virtual void OnUpdate() override
+    {
+        mBatchProcessingTab.Update();
+        mBackgroundExtractorTab.Update();
     }
 
     virtual void OnUIRender() override
@@ -25,12 +29,12 @@ class ExampleLayer : public Walnut::Layer
         // mConfigurationTab.DrawWindow();
         // mProcessingTab.Render();
         static float alignment = -1;
-        //ImGui::SetNextWindowSizeConstraints({-1, 75}, {-1,100});
+        // ImGui::SetNextWindowSizeConstraints({-1, 75}, {-1,100});
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, {-1, 75});
-        //ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, {-1, 75});
+        // ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, {-1, 75});
         ImGui::Begin("MainWindow", nullptr, ImGuiWindowFlags_NoTitleBar);
         ImGui::BeginHorizontal("h1", {-1, 0});
-        //if (ImGui::Button("Configuration", {150, 50}))
+        // if (ImGui::Button("Configuration", {150, 50}))
         //{
         //    bShowConfigurationWindow = !bShowConfigurationWindow;
         //}
@@ -38,13 +42,17 @@ class ExampleLayer : public Walnut::Layer
         {
             bShowBatchProcessingWindow = !bShowBatchProcessingWindow;
         }
+        if (ImGui::Button("Background Extractor", {200, 50}))
+        {
+            bShowBackgroundExtractingWindow = !bShowBackgroundExtractingWindow;
+        }
         ImGui::BeginDisabled(true);
         if (ImGui::Button("Node Editor", {150, 50}))
         {
             bShowNodeEditorWindow = !bShowNodeEditorWindow;
         }
         ImGui::EndDisabled();
-        //if (ImGui::Button("Processing", {150, 50}))
+        // if (ImGui::Button("Processing", {150, 50}))
         //{
         //    bShowProcessingWindow = !bShowProcessingWindow;
         //}
@@ -52,11 +60,12 @@ class ExampleLayer : public Walnut::Layer
         ImGui::End(); // main window
         ImGui::PopStyleVar();
 
-        //ImGuiTabBarFlags tab_bar_flags =
+        // ImGuiTabBarFlags tab_bar_flags =
         //    ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_AutoSelectNewTabs;
-        //if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+        // if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
         //{
-        //    if (ImGui::BeginTabItem("Configuration ", &bShowConfigurationWindow,
+        //    if (ImGui::BeginTabItem("Configuration ",
+        //    &bShowConfigurationWindow,
         //                            ImGuiTab))
         //    {
 
@@ -75,6 +84,10 @@ class ExampleLayer : public Walnut::Layer
         {
             mBatchProcessingTab.DrawWindow();
         }
+        if (bShowBackgroundExtractingWindow)
+        {
+            mBackgroundExtractorTab.DrawWindow();
+        }
         if (bShowNodeEditorWindow)
         {
             ImGui::Begin("Node Editor", &bShowNodeEditorWindow);
@@ -85,6 +98,7 @@ class ExampleLayer : public Walnut::Layer
             ImGui::Begin("Processing", &bShowProcessingWindow);
             ImGui::End();
         }
+
         if (bShowDemoWindow)
             ImGui::ShowDemoWindow(&bShowDemoWindow);
     }
@@ -93,15 +107,19 @@ class ExampleLayer : public Walnut::Layer
     // functions
   public:
     bool bShowDemoWindow = false;
+
   private:
     bool bShowConfigurationWindow;
     bool bShowBatchProcessingWindow;
     bool bShowNodeEditorWindow;
     bool bShowProcessingWindow;
+    bool bShowBackgroundExtractingWindow;
 
-    //ImProc::TabWindow mProcessingTab{"Processing"};
+    // ImProc::TabWindow mProcessingTab{"Processing"};
     ImProc::ConfigurationTab mConfigurationTab{&bShowConfigurationWindow};
     ImProc::BatchProcessingTab mBatchProcessingTab{&bShowBatchProcessingWindow};
+    ImProc::BackgroundExtractorTab mBackgroundExtractorTab{
+        &bShowBackgroundExtractingWindow};
 };
 
 Walnut::Application *Walnut::CreateApplication(int argc, char **argv)
@@ -124,13 +142,13 @@ Walnut::Application *Walnut::CreateApplication(int argc, char **argv)
                 }
                 ImGui::EndMenu();
             }
-             if (ImGui::BeginMenu("Show"))
+            if (ImGui::BeginMenu("Show"))
             {
-            	if (ImGui::MenuItem("Demo"))
-            	{
+                if (ImGui::MenuItem("Demo"))
+                {
                     layerptr->bShowDemoWindow = true;
-            	}
-            	ImGui::EndMenu();
+                }
+                ImGui::EndMenu();
             }
         });
     return app;
