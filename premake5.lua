@@ -7,4 +7,5 @@ workspace "ImProcTools"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "WalnutExternal.lua"
+include "ImProcProcessing"
 include "ImProcTools"
