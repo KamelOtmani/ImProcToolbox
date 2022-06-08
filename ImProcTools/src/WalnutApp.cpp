@@ -6,6 +6,7 @@
 #include "UI/BackgroundExtractor.hpp"
 #include "UI/ConfigurationTab.hpp"
 #include "UI/Style.hpp"
+#include "implot.h"
 #include <UI/BatchProcessing.hpp>
 
 using namespace Walnut;
@@ -101,12 +102,26 @@ class ExampleLayer : public Walnut::Layer
 
         if (bShowDemoWindow)
             ImGui::ShowDemoWindow(&bShowDemoWindow);
+        if (bShowPlotsDemo)
+        {
+            int bar_data[10] = {0, 2, 3, 4, 5, 8, 7, 9, 6, 10};
+
+            ImGui::Begin("Plots");
+            if (ImPlot::BeginPlot("My Plot"))
+            {
+                ImPlot::PlotBars("My Bar Plot", bar_data, 10);
+                // ImPlot::PlotLine("My Line Plot", x_data, y_data, 1000);
+                ImPlot::EndPlot();
+            }
+            ImGui::End();
+        }
     }
 
   private:
     // functions
   public:
     bool bShowDemoWindow = false;
+    bool bShowPlotsDemo = false;
 
   private:
     bool bShowConfigurationWindow;
@@ -145,6 +160,10 @@ Walnut::Application *Walnut::CreateApplication(int argc, char **argv)
             if (ImGui::BeginMenu("Show"))
             {
                 if (ImGui::MenuItem("Demo"))
+                {
+                    layerptr->bShowDemoWindow = true;
+                }
+                if (ImGui::MenuItem("Plots Dema"))
                 {
                     layerptr->bShowDemoWindow = true;
                 }

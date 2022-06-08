@@ -18,6 +18,7 @@
 // Emedded font
 #include "ImGui/Roboto-Regular.embed"
 #include <imgui_internal.h>
+#include "implot.h"
 
 extern bool g_ApplicationRunning;
 
@@ -501,6 +502,7 @@ void Application::Init()
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     (void)io;
     io.ConfigFlags |=
@@ -607,6 +609,7 @@ void Application::Shutdown()
     ImGui_ImplVulkan_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+    ImPlot::DestroyContext();
 
     CleanupVulkanWindow();
     CleanupVulkan();
