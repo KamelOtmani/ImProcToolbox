@@ -12,3 +12,4 @@ bin-int/
 # Exclude
 !vendor/bin
 /ImProcTools/VTune Profiler Results/ImProcTools
+/ImProcProcessing
