@@ -377,8 +377,8 @@ void BatchProcessingTab::Update()
     if (mPlayState != 0)
     {
         // loop back
-        UpdateImageViewer();
         mCurrentFrame = (mCurrentFrame + mPlayState) % mPaths.size();
+        UpdateImageViewer();
     }
 }
 
