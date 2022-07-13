@@ -26,7 +26,7 @@ void BackgroundExtractorTab::UpdateImageViewer()
 void BackgroundExtractorTab::drawProcessWindow()
 {
     ImGui::Begin("Process");
-
+    ImGui::DragInt("Num Images", &mMaxImages);
     std::vector<char> buffer(100);
     if (ImGui::InputTextWithHint("Background image Name", "bg.tif", buffer.data(),
                                  buffer.size()))
@@ -37,33 +37,107 @@ void BackgroundExtractorTab::drawProcessWindow()
     if (ImGui::Button("Extract Backgrounds"))
     {
         // First, check if we have all the background images
-        int i = 0;
+        int j = 0;
         for (const auto &folder : mFolders)
         {
+            std::cout << "Processing " << folder.stem() << "..." << j / mFolders.size()
+                      << "\n";
             mProgress = 0;
-            if (mActivatedFolders[i] != 0)
+            if (mActivatedFolders[j] != 0)
             {
                 auto pattern = (folder / mPattern).string();
                 auto paths = utility::GetImageSequenceInfo(pattern);
 
-                auto bg = utility::ImportGrayscaleImage(paths[0].path);
-                auto fbg = utility::ConvertToFloatImage(bg);
+                auto paths_to_calculate = std::vector < ImProc::ImageInfo> (paths.begin(),
+                   paths.begin() + std::min((int)paths.size(), mMaxImages));
 
-                for (const auto &path : paths)
+
+                // prepare the threads
+                const auto coreNum = std::thread::hardware_concurrency();
+                const auto cache_size = paths_to_calculate.size() / coreNum + 1;
+                auto threads_paths = std::vector<std::vector<ImageInfo>>{};
+                threads_paths.reserve(coreNum);
+                auto threads_results = std::vector<Results>{};
+                threads_results.reserve(coreNum);
+                auto threads = std::vector<std::thread>{};
+                threads.reserve(coreNum);
+                auto bgImages = std::vector<cv::Mat>{};
+
+                for (unsigned int i = 0; i < coreNum; i++)
                 {
-                    fbg += utility::ConvertToFloatImage(
-                        utility::ImportGrayscaleImage(path.path));
+                    bgImages.emplace_back(cv::Mat{});
                 }
 
-                fbg /= paths.size();
+                // split the workload
+                for (size_t i = 0; i < paths_to_calculate.size();
+                     i += cache_size)
+                {
+                    auto last =
+                        std::min(paths_to_calculate.size(), i + cache_size);
+                    threads_paths.emplace_back(paths_to_calculate.begin() + i,
+                                               paths_to_calculate.begin() +
+                                                   last);
+                    threads_results.emplace_back(last - i);
+                }
+
+                // fire the threads
+                // TODO : fix the same issue in the batch processing
+                // (replacing corenum by the threads size in case we have lower images than to fill the threads)
+                for (unsigned int i = 0; i < threads_paths.size(); i++)
+                {
+                    const auto &lPaths = threads_paths[i];
+                    auto ibg = &bgImages[i];
+                    auto id = (int)i;
+                    threads.emplace_back(std::thread(
+                        [&, ibg, id]() { WorkerThread(lPaths, ibg, id); }));
+                }
+
+                // wait for all the treads to finish
+                for (auto &thread : threads)
+                {
+                    thread.join();
+                }
+
+                auto fbg = bgImages[0];
+                for (const auto& image : bgImages)
+                {
+                    fbg += image;
+                }
+
+                fbg /= ((int)bgImages.size() + 1);
+                //cv::normalize(fbg, fbg);
                 utility::ExportGrayscaleImage(
-                    utility::ConvertToUintImage(fbg),
+                    utility::ConvertToUintImage(fbg,255),
                     (folder / mBackgroundName).string());
             }
-            i++;
+            j++;
         }
     }
     ImGui::End();
+}
+
+void BackgroundExtractorTab::WorkerThread(const std::vector<ImageInfo> &paths,cv::Mat* bgImage,int id)
+{    
+    int j = 0;
+    auto bg = utility::ConvertToFloatImage(utility::ImportGrayscaleImage(paths[0].path),
+                                           1 / 255.f);
+    for (const auto &[path, frame] : paths)
+    {
+        // bar.progress(i,paths.size());
+        auto inputImage = utility::ConvertToFloatImage(
+            utility::ImportGrayscaleImage(path), 1 / 255.f);
+
+        bg +=  inputImage;
+        j++;
+        if (j % (paths.size() / 10 ) == 0)
+        {
+            std::cout << "thread " << id << " "
+                      << 100 * (j / (float)paths.size())
+                                                  << " %\n";
+        }
+    }
+    *bgImage = bg / (paths.size() + 1);
+    std::cout << "thread " << id << "done ! .......\n";
 }
 
 void BackgroundExtractorTab::DrawWindow()
@@ -72,10 +146,9 @@ void BackgroundExtractorTab::DrawWindow()
 
     // Paths
     std::vector<char> buffer(100);
-    if (ImGui::InputTextWithHint("Pattern", "Img*.tif", buffer.data(),
-                                 buffer.size()))
+    if (ImGui::InputText("Pattern", mPattern.data(), mPattern.size()))
     {
-        mPattern = {buffer.data()};
+        //mPattern = {buffer.data()};
     }
     if (ImGui::Button("Set Batches Folder", ImVec2{150, 50}))
     {
