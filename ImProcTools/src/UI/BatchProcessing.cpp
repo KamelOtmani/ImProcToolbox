@@ -54,6 +54,12 @@ void BatchProcessingTab::drawProcessWindow()
 {
     ImGui::Begin("Process");
     ImGui::Checkbox("Output Intermidiate Results", &bOutputIntermediateImages);
+    ImGui::Checkbox("Overide Range", &bOverrideRange);
+    if (bOverrideRange)
+    {
+        ImGui::DragInt("Start", &mStart);
+        ImGui::DragInt("Stop", &mStop);
+    }
 
         if (ImGui::Button("Process Selected Batches"))
     {
@@ -88,6 +94,8 @@ void BatchProcessingTab::drawProcessWindow()
                 {
                     auto pattern = (folder / mPattern).string();
                     auto path = utility::GetImageSequenceInfo(pattern);
+                    if (bOverrideRange)
+                        path = {path.begin() + mStart, path.begin() + mStop};
                     auto outputfolderPath =
                         fs::path(path[0].path).parent_path() / "output ";
                     if (!fs::exists(outputfolderPath))
@@ -424,6 +432,7 @@ void BatchProcessingTab::WorkerThred(const std::vector<ImageInfo> &paths,
                 info.position = utility::ComputeCenterOfMass(contour);
                 info.frame = frame;
                 info.area = (float)utility::ComputeArea(contour);
+                info.orientation = (float)utility::ComputeAngle(contour);
                 // info.contour = contour;
                 results->AddParticle(info);
             }

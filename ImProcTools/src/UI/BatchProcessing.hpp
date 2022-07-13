@@ -68,5 +68,9 @@ class BatchProcessingTab
     float mOverallProgress;
     bool bProcessImage{false};
     bool bOutputIntermediateImages{false};
+
+    int mStart;
+    int mStop;
+    bool bOverrideRange;
 };
 } // namespace ImProc
