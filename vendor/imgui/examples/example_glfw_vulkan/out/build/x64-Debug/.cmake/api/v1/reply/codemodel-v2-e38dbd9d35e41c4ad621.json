@@ -1,0 +1,124 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.8"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "binary_dir",
+					"childIndexes" : 
+					[
+						2
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "C:/Users/landalok/Desktop/code/ImProc_Toolbox_GUI/vendor/GLFW"
+				},
+				{
+					"build" : "binary_dir/src",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "C:/Users/landalok/Desktop/code/ImProc_Toolbox_GUI/vendor/GLFW/src",
+					"targetIndexes" : 
+					[
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "imgui_example_glfw_vulkan",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1,
+						2
+					],
+					"name" : "GLFW",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "example_glfw_vulkan::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-example_glfw_vulkan-Debug-5bfce38aa559861dcc35.json",
+					"name" : "example_glfw_vulkan",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "glfw::@0d9120013b5547956b1a",
+					"jsonFile" : "target-glfw-Debug-9301a1b49a265c671310.json",
+					"name" : "glfw",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "update_mappings::@0d9120013b5547956b1a",
+					"jsonFile" : "target-update_mappings-Debug-a4db86e977b0fda4d055.json",
+					"name" : "update_mappings",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/landalok/Desktop/code/ImProc_Toolbox_GUI/vendor/imgui/examples/example_glfw_vulkan/out/build/x64-Debug",
+		"source" : "C:/Users/landalok/Desktop/code/ImProc_Toolbox_GUI/vendor/imgui/examples/example_glfw_vulkan"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 2
+	}
+}
