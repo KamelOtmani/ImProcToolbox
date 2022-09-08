@@ -55,22 +55,22 @@ class BatchProcessingTab
     std::string mPattern{"Img*.tif"};
     std::unique_ptr<Walnut::Image> mPreviewImage;
     std::unique_ptr<Walnut::Image> mProcessedImage;
-    ImProc::threshold_detection::ThresholdDetectionParameters mGlobalParams
-    {
-        .blurKernelSize = 9,
-        .threshold = 120,
-        .minSize = 15,.ClosingShape = cv::MorphShapes::MORPH_RECT, 
+    ImProc::threshold_detection::ThresholdDetectionParameters mGlobalParams{
+        .blurKernelSize = 3,
+        .threshold = 135,
+        .minSize = 4,
+        .ClosingShape = cv::MorphShapes::MORPH_ELLIPSE,
     };
     bool bShouldCalculateSizes = true;
     int mPlayState = 0;
     std::atomic<int> mProgress{};
-    float mBatchProgress;
-    float mOverallProgress;
+    float mBatchProgress{0.0f};
+    float mOverallProgress{0.0f};
     bool bProcessImage{false};
     bool bOutputIntermediateImages{false};
 
-    int mStart;
-    int mStop;
-    bool bOverrideRange;
+    int mStart = 0;
+    int mStop = 0;
+    bool bOverrideRange = false;
 };
 } // namespace ImProc
